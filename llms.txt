@@ -2,7 +2,7 @@
 
 > LeadWrench sells one-time automation kits for home-service contractors (roofers, HVAC companies, plumbers, electricians). The core product texts every missed caller back within seconds from the contractor's own business number, and also sends Google review requests, appointment reminders and quote follow-ups. Pay once, no monthly software fee. Runs on Twilio, n8n and Google Sheets, and connects to Jobber, Housecall Pro, QuickBooks Online and Google Calendar.
 
-Contact: (678) 932-0979, leadwrenchsupport@gmail.com. Based in metro Atlanta, Georgia; works with contractors anywhere in the US.
+Contact: leadwrenchsupport@gmail.com. Based in metro Atlanta, Georgia; works with contractors anywhere in the US.
 
 ## Products and pricing (launch pricing through Dec 31, 2026)
 - [Contractor Lead Kit](https://leadwrench.netlify.app/#pricing): 5 automations (missed-call text-back, instant lead response, review requests, appointment reminders, quote follow-up). $79 one-time (regular $149).
