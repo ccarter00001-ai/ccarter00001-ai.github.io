@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Missed Call Text Back With Twilio + n8n: Setup Guide</title><meta name="description" content="Step-by-step: build your own missed-call text-back for a contracting business with a Twilio number and n8n. What it costs, how it works, and the texting rules.">
+<link rel="canonical" href="https://leadwrench.netlify.app/guides/missed-call-text-back-twilio-n8n">
+<meta property="og:title" content="Missed Call Text Back With Twilio + n8n: Setup Guide"><meta property="og:description" content="Step-by-step: build your own missed-call text-back for a contracting business with a Twilio number and n8n. What it costs, how it works, and the texting rules."><meta property="og:type" content="article">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="/styles.css">
+<style>.article{max-width:760px;padding-top:56px;padding-bottom:40px}.article h1{font-size:clamp(40px,6vw,64px)}.article h2{font-size:32px;margin-top:40px}
+.article li{margin:8px 0}.article blockquote{margin:16px 0;padding:16px 20px;background:var(--chalk);border-left:5px solid var(--hivis);border-radius:4px}
+.article code{background:var(--chalk);padding:1px 6px;border-radius:4px;font-size:.92em}.cta{background:var(--denim);color:var(--chalk);padding:28px;border-radius:10px;margin:40px 0}.cta a.btn{margin-top:10px}</style>
+<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "Article", "headline": "How to set up missed call text back with Twilio and n8n", "description": "Step-by-step: build your own missed-call text-back for a contracting business with a Twilio number and n8n. What it costs, how it works, and the texting rules.", "author": {"@type": "Organization", "name": "LeadWrench"}, "publisher": {"@type": "Organization", "name": "LeadWrench"}, "datePublished": "2026-11-24", "mainEntityOfPage": "https://leadwrench.netlify.app/guides/missed-call-text-back-twilio-n8n"}, {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can I keep my existing business number?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Forward your existing line to the Twilio number, or use call forwarding when busy or unanswered, so the text-back still triggers."}}, {"@type": "Question", "name": "Does missed call text back work on a landline?", "acceptedAnswer": {"@type": "Answer", "text": "It works with any number you can forward to Twilio. The text goes out from the Twilio number, so use a number that can send texts."}}, {"@type": "Question", "name": "How long does setup take?", "acceptedAnswer": {"@type": "Answer", "text": "The workflow takes an hour or two to build and test. Carrier registration for business texting usually takes one to three weeks."}}]}]</script><meta property="og:image" content="https://leadwrench.netlify.app/og-image.png"><meta property="og:url" content="https://leadwrench.netlify.app/guides/missed-call-text-back-twilio-n8n"><meta name="twitter:card" content="summary_large_image">
+</head><body>
+<header><div class="wrap"><a class="logo" href="/">Lead<span>Wrench</span></a>
+<nav><a href="/#how">How it works</a><a href="/guides/">Guides</a><a href="/kits">Kits</a><a href="/#pricing">Pricing</a></nav></div></header>
+<main class="wrap article">
+<p class="eyebrow">LeadWrench guide · Updated November 2026</p>
+<h1>How to set up missed call text back with Twilio and n8n</h1>
+
+<p class="lede">A missed-call text-back sends an automatic text to anyone who calls your business and doesn't reach you. For contractors it is the cheapest way to stop losing jobs to voicemail. Here is how it works and how to build it yourself.</p>
+<h2>How it works</h2>
+<ol>
+<li>Customers call a local Twilio number. That can be a new number on your truck and ads, or your existing line forwarded to it.</li>
+<li>Twilio forwards the call to your cell and rings for about 20 seconds.</li>
+<li>If you don't answer (no-answer, busy or failed), Twilio tells your automation the call was missed.</li>
+<li>The automation texts the caller from your business number ("Sorry we missed you, we're on a job, what can we help with?") and texts you their number.</li>
+<li>It logs the lead in a Google Sheet so nobody falls through the cracks.</li>
+</ol>
+<h2>What you need</h2>
+<ul>
+<li><b>A Twilio account and a local number.</b> A local number costs a little over $1 a month and texts cost under a cent each before carrier fees. Check Twilio's current pricing page.</li>
+<li><b>An automation tool.</b> n8n (self-hosted, or n8n Cloud) works well because the workflow is yours and there is no per-task fee on self-hosted.</li>
+<li><b>Business texting registration (A2P 10DLC).</b> US carriers require businesses to register before texting from a local number. Approval usually takes one to three weeks, so start it first.</li>
+<li><b>A Google Sheet</b> for your leads list, if you want a simple CRM.</li>
+</ul>
+<h2>Build it in n8n</h2>
+<ol>
+<li><b>Webhook for incoming calls.</b> Create a Webhook node and paste its URL into your Twilio number's "A call comes in" setting.</li>
+<li><b>Forward the call.</b> Respond with TwiML that dials your cell with a timeout and an <code>action</code> URL that points to a second webhook.</li>
+<li><b>Second webhook for "call ended".</b> Twilio posts <code>DialCallStatus</code> here. Add an IF node: no-answer, busy or failed means missed.</li>
+<li><b>Text the caller.</b> Twilio node, Send SMS, to the caller's number (<code>From</code>), with your message. Always end with "Reply STOP to opt out."</li>
+<li><b>Alert yourself and log it.</b> A second SMS to your cell, then append a row to your Leads sheet.</li>
+<li>Test by calling your Twilio number from another phone and letting it ring out.</li>
+</ol>
+<h2>Texting rules to follow</h2>
+<ul>
+<li>Text only people who contacted you or are your customers.</li>
+<li>Include an opt-out in every message and honor STOP immediately.</li>
+<li>Send during reasonable hours.</li>
+</ul>
+<h2>Skip the build</h2>
+<p>The <a href="/#pricing">LeadWrench Contractor Lead Kit</a> includes this workflow already built and tested, plus instant lead response, Google review requests, appointment reminders and quote follow-up. It is $79 one-time at launch, or $499 if you want us to install it for you.</p>
+
+<div class="cta on-dark"><h2 style="margin-top:0">Stop losing jobs to voicemail</h2><p>Every missed caller gets a text from your number in seconds. One-time price, no monthly software fee.</p>
+<a class="btn" href="/#pricing">See pricing</a> <a class="btn ghost" href="/calculator.html">Try the calculator</a></div>
+<section class="faq" style="padding:0"><h2>Questions</h2><details><summary>Can I keep my existing business number?</summary><p>Yes. Forward your existing line to the Twilio number, or use call forwarding when busy or unanswered, so the text-back still triggers.</p></details><details><summary>Does missed call text back work on a landline?</summary><p>It works with any number you can forward to Twilio. The text goes out from the Twilio number, so use a number that can send texts.</p></details><details><summary>How long does setup take?</summary><p>The workflow takes an hour or two to build and test. Carrier registration for business texting usually takes one to three weeks.</p></details></section>
+</main>
+<footer><div class="wrap"><p><a href="/guides/">All guides</a><a href="/missed-call-text-back-for-roofers">Roofers</a><a href="/missed-call-text-back-for-hvac">HVAC</a><a href="/missed-call-text-back-for-plumbers">Plumbers</a><a href="/missed-call-text-back-for-electricians">Electricians</a></p>
+<p>© 2026 LeadWrench · <a href="mailto:leadwrenchsupport@gmail.com">leadwrenchsupport@gmail.com</a></p></div></footer><script>(function(){try{var T='https://leadwrench.netlify.app/.netlify/functions/track',s=function(o){var d=JSON.stringify(o);if(navigator.sendBeacon){navigator.sendBeacon(T,d)}else{fetch(T,{method:'POST',body:d,keepalive:true})}};var r='';try{r=document.referrer?new URL(document.referrer).hostname:''}catch(e){}if(r===location.hostname)r='';s({p:location.pathname,r:r});document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a');if(a&&/buy\.stripe\.com/.test(a.href)){var m=a.href.match(/promo_code=([A-Z0-9]+)/);s({p:location.pathname,e:'buy',k:m?m[1]:'nocode'})}})}catch(e){}})();</script>
+</body></html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Missed Call Cost Calculator for Contractors · LeadWrench</title>
+<meta name="description" content="Free calculator: how much revenue do missed calls cost your plumbing, HVAC, roofing or electrical business each month and year?">
+<link rel="stylesheet" href="/styles.css">
+<style>
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:22px}
+label{display:block;font-weight:650;font-size:15px;margin-bottom:6px}
+input[type=number]{width:100%;font:inherit;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.hint{font-size:13.5px;color:var(--muted);margin-top:4px}
+.result{background:var(--denim);color:#fff;border-radius:14px;padding:26px;margin-top:24px}
+.result .big{font-size:clamp(34px,5vw,52px);font-weight:800;letter-spacing:-.02em;color:var(--hivis)}
+.result p{color:#d7dbe2;margin:6px 0 0}
+</style><link rel="canonical" href="https://leadwrench.netlify.app/calculator.html">
+<meta property="og:image" content="https://leadwrench.netlify.app/og-image.png"><meta property="og:url" content="https://leadwrench.netlify.app/calculator.html"><meta name="twitter:card" content="summary_large_image">
+</head>
+<body><header><div class="wrap"><a class="logo" href="/">Lead<span>Wrench</span></a><nav><a href="/#how">How it works</a><a href="/#pricing">Pricing</a><a href="/#contact">Contact</a></nav></div></header>
+<main class="wrap" style="padding:52px 22px 30px">
+  <div class="eyebrow">Free tool</div>
+  <h1>What are missed calls costing you?</h1>
+  <p class="lede">Plug in your numbers. Everything is calculated in your browser, and nothing you type is sent anywhere.</p>
+  <div class="calc">
+    <div class="card"><label for="calls">Missed calls per week</label><input id="calls" type="number" min="0" value="8"><div class="hint">Check your phone's recent calls for a typical week.</div></div>
+    <div class="card"><label for="newpct">% of those that are new customers</label><input id="newpct" type="number" min="0" max="100" value="50"><div class="hint">Leave out spam and existing customers.</div></div>
+    <div class="card"><label for="close">% you'd normally win if you answered</label><input id="close" type="number" min="0" max="100" value="40"><div class="hint">Your usual close rate on new inquiries.</div></div>
+    <div class="card"><label for="job">Average job value ($)</label><input id="job" type="number" min="0" value="450"><div class="hint">Typical ticket, not your biggest job.</div></div>
+    <div class="card"><label for="lost">% who call a competitor instead of leaving a voicemail</label><input id="lost" type="number" min="0" max="100" value="75"><div class="hint">Most callers don't wait for a callback.</div></div>
+  </div>
+  <div class="result" aria-live="polite">
+    <div>Estimated revenue lost to missed calls</div>
+    <div class="big" id="yr">$0 / year</div>
+    <p id="mo">$0 per month · 0 jobs per month</p>
+  </div>
+  <section style="border:0;padding:30px 0 0">
+    <h2>Win back part of that, automatically</h2>
+    <p>LeadWrench texts every missed caller within seconds, so they reply to you instead of dialing the next contractor. One recovered job usually covers the cost.</p>
+    <div class="row"><a class="btn" href="https://buy.stripe.com/14A3cu40G1lc2ru77fgA800?prefilled_promo_code=LAUNCH79">Get the Kit: $79 (launch price)</a><a class="btn ghost" href="/#pricing">See all options</a></div>
+    <p class="note">Estimates only, based on the numbers you enter. Real results vary.</p>
+  </section>
+</main>
+<footer><div class="wrap"><p><a href="/terms.html">Terms</a><a href="/privacy.html">Privacy</a><a href="/refunds.html">Refunds</a></p><p>© 2026 LeadWrench</p></div></footer>
+<script>
+  var ids = ['calls','newpct','close','job','lost'];
+  function v(id){ var n = parseFloat(document.getElementById(id).value); return isFinite(n) && n > 0 ? n : 0; }
+  function pct(id){ return Math.min(v(id), 100) / 100; }
+  var fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+  function calc(){
+    var jobsPerWeek = v('calls') * pct('newpct') * pct('lost') * pct('close');
+    var month = jobsPerWeek * 52 / 12;
+    document.getElementById('yr').textContent = fmt.format(jobsPerWeek * 52 * v('job')) + ' / year';
+    document.getElementById('mo').textContent = fmt.format(month * v('job')) + ' per month · ' + month.toFixed(1) + ' jobs per month';
+  }
+  ids.forEach(function(id){ document.getElementById(id).addEventListener('input', calc); });
+  calc();
+</script>
+<script>(function(){try{var T='https://leadwrench.netlify.app/.netlify/functions/track',s=function(o){var d=JSON.stringify(o);if(navigator.sendBeacon){navigator.sendBeacon(T,d)}else{fetch(T,{method:'POST',body:d,keepalive:true})}};var r='';try{r=document.referrer?new URL(document.referrer).hostname:''}catch(e){}if(r===location.hostname)r='';s({p:location.pathname,r:r});document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a');if(a&&/buy\.stripe\.com/.test(a.href)){var m=a.href.match(/promo_code=([A-Z0-9]+)/);s({p:location.pathname,e:'buy',k:m?m[1]:'nocode'})}})}catch(e){}})();</script>
+</body></html>
